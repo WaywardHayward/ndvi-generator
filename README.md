@@ -16,3 +16,9 @@ Run to code using the following command.
 The application will then prompt you for a red and a nir bitmap.
 Once the application is completed, you will see the NVDI image in same directory as the red image.
 
+The colouring of the NVDI image is based on the following formula:
+
+    NVDI = (NIR - RED) / (NIR + RED)
+
+This is then converted to an RGB image using with Red representing a low NVDI value and Green representing a high NVDI value.
+
