@@ -2,16 +2,14 @@ using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace nvdi
+namespace ndvi
 {
-    public class NvdiGenerator
+    public class NdviGenerator
     {
         private readonly string _redFilePath;
         private readonly string _nirFilePath;
 
-
-
-        public NvdiGenerator(string redFile, string nirFile)
+        public NdviGenerator(string redFile, string nirFile)
         {
             _redFilePath = redFile;
             _nirFilePath = nirFile;
@@ -25,36 +23,36 @@ namespace nvdi
         {
             var redImage = Image.Load<Rgba32>(File.OpenRead(_redFilePath));
             var nirImage = Image.Load<Rgba32>(File.OpenRead(_nirFilePath));
-            var nvdiImage = new Image<Rgba32>(redImage.Width, redImage.Height);
+            var ndviImage = new Image<Rgba32>(redImage.Width, redImage.Height);
 
             for (int y = 0; y < redImage.Height; y++)
             {
                 var redRowSpan = redImage.GetPixelRowSpan(y);
                 var nirRowSpan = nirImage.GetPixelRowSpan(y);
-                var nvdiRowSpan = nvdiImage.GetPixelRowSpan(y);
+                var nvdiRowSpan = ndviImage.GetPixelRowSpan(y);
                 for (int x = 0; x < redImage.Width; x++)
                 {
                     var redValue = redRowSpan[x].R;
                     var nirValue = nirRowSpan[x].R;
-                    var nvdiValue = (byte)((nirValue - redValue) * byte.MaxValue / (nirValue + redValue));
-                    nvdiRowSpan[x] = GetNvdiColor(nvdiValue);
+                    var ndviValue = (byte)((nirValue - redValue) * byte.MaxValue / (nirValue + redValue));
+                    nvdiRowSpan[x] = GetNvdiColor(ndviValue);
                 }
             }
 
-            return nvdiImage;
+            return ndviImage;
         }
 
         /// <summary>
         /// Gets the color for the nvdi pixel value.
         /// </summary>
         /// <returns>The nvdi color on a red to green scale</returns>
-        private Rgba32 GetNvdiColor(byte nvdiValue)
+        private Rgba32 GetNvdiColor(byte ndviValue)
         {            
-            var mappedRedValue = (nvdiValue > byte.MaxValue / 2 ? 1 - 2 * (nvdiValue - byte.MaxValue / 2) / byte.MaxValue : 1.0) * byte.MaxValue;
-            var mappedGreenValue = (nvdiValue > byte.MaxValue / 2 ? 1.0 : 2 * nvdiValue / byte.MaxValue) * byte.MaxValue;
+            var mappedRedValue = (ndviValue > byte.MaxValue / 2 ? 1 - 2 * (ndviValue - byte.MaxValue / 2) / byte.MaxValue : 1.0) * byte.MaxValue;
+            var mappedGreenValue = (ndviValue > byte.MaxValue / 2 ? 1.0 : 2 * ndviValue / byte.MaxValue) * byte.MaxValue;
             var mappedBlueValue = 0;
-            var nvdiColor = new Rgba32((int)mappedRedValue, (int)mappedGreenValue, (int)mappedBlueValue);
-            return nvdiColor;
+            var ndviColor = new Rgba32((int)mappedRedValue, (int)mappedGreenValue, (int)mappedBlueValue);
+            return ndviColor;
         }
     }
 }

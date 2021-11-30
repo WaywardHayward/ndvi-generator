@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace nvdi
+namespace ndvi
 {
     class Program
     {
@@ -13,8 +12,8 @@ namespace nvdi
         {
             var redFile = args.Length > 0 ? args[0] : PromptForFilePath("Please enter the path to the red file:");
             var nirFile = args.Length > 1 ? args[1] : PromptForFilePath("Please enter the path to the nir file:");
-            var nvdiGenerator = new NvdiGenerator(redFile, nirFile);
-            SaveNvdi(redFile, nvdiGenerator.Generate());
+            var ndviGenerator = new NdviGenerator(redFile, nirFile);
+            SaveNvdi(redFile, ndviGenerator.Generate());
         }
 
         private static void SaveNvdi(string redFile, Image<Rgba32> nvdiImage)
